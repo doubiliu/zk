@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.810.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testBls12Contract", "testBls12Contract\testBls12Contract.csproj", "{9E4D6FC9-0AD2-46E4-821C-7A3BDD78E41D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{A236F898-8F45-4F78-A7CE-2EDF4752BD85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "neo", "..\..\my-own-project\neo\src\neo\neo.csproj", "{3347CEF2-7548-49C1-9AB3-AE78E63F26E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo.Compiler.CSharp", "..\neo-devpack-dotnet\src\Neo.Compiler.CSharp\Neo.Compiler.CSharp.csproj", "{2BAD5D6C-5FB6-4608-B339-586AC6E979ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo.SmartContract.Framework", "..\neo-devpack-dotnet\src\Neo.SmartContract.Framework\Neo.SmartContract.Framework.csproj", "{A250DDE5-ECC5-408B-A900-DEC34AE6FAAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo.Compiler.CSharp.UnitTests", "..\neo-devpack-dotnet\tests\Neo.Compiler.CSharp.UnitTests\Neo.Compiler.CSharp.UnitTests.csproj", "{214E8B22-2DB7-4836-A377-5679F02DBDCE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E4D6FC9-0AD2-46E4-821C-7A3BDD78E41D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E4D6FC9-0AD2-46E4-821C-7A3BDD78E41D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E4D6FC9-0AD2-46E4-821C-7A3BDD78E41D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E4D6FC9-0AD2-46E4-821C-7A3BDD78E41D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A236F898-8F45-4F78-A7CE-2EDF4752BD85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A236F898-8F45-4F78-A7CE-2EDF4752BD85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A236F898-8F45-4F78-A7CE-2EDF4752BD85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A236F898-8F45-4F78-A7CE-2EDF4752BD85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3347CEF2-7548-49C1-9AB3-AE78E63F26E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3347CEF2-7548-49C1-9AB3-AE78E63F26E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3347CEF2-7548-49C1-9AB3-AE78E63F26E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3347CEF2-7548-49C1-9AB3-AE78E63F26E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BAD5D6C-5FB6-4608-B339-586AC6E979ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BAD5D6C-5FB6-4608-B339-586AC6E979ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BAD5D6C-5FB6-4608-B339-586AC6E979ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BAD5D6C-5FB6-4608-B339-586AC6E979ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A250DDE5-ECC5-408B-A900-DEC34AE6FAAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A250DDE5-ECC5-408B-A900-DEC34AE6FAAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A250DDE5-ECC5-408B-A900-DEC34AE6FAAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A250DDE5-ECC5-408B-A900-DEC34AE6FAAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{214E8B22-2DB7-4836-A377-5679F02DBDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{214E8B22-2DB7-4836-A377-5679F02DBDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{214E8B22-2DB7-4836-A377-5679F02DBDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{214E8B22-2DB7-4836-A377-5679F02DBDCE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1B69C7A5-7D90-47DD-95F1-95001FEA0242}
+	EndGlobalSection
+EndGlobal
