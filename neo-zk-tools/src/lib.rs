@@ -19,12 +19,11 @@ pub extern "C" fn gt_add(gt1: *mut gtobject, gt2: *mut gtobject) -> *const gtobj
 
 #[no_mangle]
 pub extern "C" fn gt_mul(gt1: *mut gtobject, mul: u64) -> *const gtobject {
+    use bls12_381::Scalar;
     let gt1_bytes = unsafe { gt1.as_mut().expect("gt_add::invalid gt1 ptr").val };
-    let mut result = [0u64; 72];
-    for i in 0..mul {
-        result = bytes_gt_add(gt1_bytes, gt1_bytes);
-    }
-    println!("gt_add result: {:?}", result);
+    let gt = bytes_to_gt(gt1_bytes);
+    let gt_r = gt * Scalar::from(mul);
+    let result = gt_to_bytes(gt_r);
     let resultobj = gtobject { val: result };
     let b = Box::new(resultobj);
     Box::into_raw(b)
@@ -40,6 +39,16 @@ pub extern "C" fn g1_g2_pairing(g1: *mut g1object, g2: *mut g2object) -> *const 
     let b = Box::new(resultobj);
     Box::into_raw(b)
 }
+#[no_mangle]
+pub extern "C" fn gt_neg(gt: *mut gtobject) -> *const gtobject {
+    let gt_bytes = unsafe { gt.as_mut().expect("gt_neg::invalid gt ptr").val };
+    let result = gt_bytes_neg(gt_bytes);
+    let result_bytes = gt_to_bytes(result);
+    let resultobj = gtobject { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
 
 pub struct g1object {
     pub val: [u8; 96],
@@ -54,6 +63,80 @@ pub struct gtobject {
 }
 
 #[no_mangle]
+pub extern "C" fn gt_neg_mul() -> *const gtobject{
+    use bls12_381::Scalar;
+    let mut gt1 = pairing(&G1Affine::generator(), &G2Affine::generator());
+    gt1 = gt1 * Scalar::from(3);
+    let result_bytes = gt_to_bytes(-gt1);
+    let resultobj = gtobject { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+#[no_mangle]
+pub extern "C" fn gt_add_test() -> *const gtobject{
+    let gt1 = pairing(&G1Affine::generator(), &G2Affine::generator());
+    let gt = gt1 + gt1;
+    let result_bytes = gt_to_bytes(gt);
+    let resultobj = gtobject { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+#[no_mangle]
+pub extern "C" fn gt_mul_test() -> *const gtobject{
+    use bls12_381::Scalar;
+    let mut gt1 = pairing(&G1Affine::generator(), &G2Affine::generator());
+    let gt1 = gt1 * Scalar::from(3);
+    let result_bytes = gt_to_bytes(gt1);
+    let resultobj = gtobject { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+#[no_mangle]
+pub extern "C" fn g1_add_test() -> *const g1object{
+    let g1 =G1Projective::from(&G1Affine::generator());
+    let g1_result = G1Affine::from(g1+g1);
+    let result_bytes = g1_to_bytes(g1_result);
+    let resultobj = g1object { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+#[no_mangle]
+pub extern "C" fn g1_mul_test() -> *const g1object{
+    use bls12_381::Scalar;
+    let g1 =G1Affine::generator();
+    let g1_result = G1Affine::from(g1 * Scalar::from(3));
+    let result_bytes = g1_to_bytes(g1_result);
+    let resultobj = g1object { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+#[no_mangle]
+pub extern "C" fn g2_add_test() -> *const g2object{
+    let g2 =G2Projective::from(&G2Affine::generator());
+    let g2_result = G2Affine::from(g2+g2);
+    let result_bytes = g2_to_bytes(g2_result);
+    let resultobj = g2object { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+#[no_mangle]
+pub extern "C" fn g2_mul_test() -> *const g2object{
+    use bls12_381::Scalar;
+    let g2 =G2Affine::generator();
+    let g2_result = G2Affine::from(g2 * Scalar::from(3));
+    let result_bytes = g2_to_bytes(g2_result);
+    let resultobj = g2object { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+#[no_mangle]
 pub extern "C" fn g1_add(g1_1: *mut g1object, g1_2: *mut g1object) -> *const g1object {
     let g1_1_bytes = unsafe { g1_1.as_mut().expect("g1_add::invalid g1_1 ptr").val };
     let g1_2_bytes = unsafe { g1_2.as_mut().expect("g1_add::invalid g1_2 ptr").val };
@@ -64,6 +147,17 @@ pub extern "C" fn g1_add(g1_1: *mut g1object, g1_2: *mut g1object) -> *const g1o
 }
 
 #[no_mangle]
+pub extern "C" fn g1_neg(g1: *mut g1object) -> *const g1object {
+    let g1_bytes = unsafe { g1.as_mut().expect("g1_neg::invalid g1 ptr").val };
+    let result = g1_bytes_neg(g1_bytes);
+    let result_bytes = g1_to_bytes(result);
+    let resultobj = g1object { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+
+#[no_mangle]
 pub extern "C" fn g2_add(g2_1: *mut g2object, g2_2: *mut g2object) -> *const g2object {
     let g2_1_bytes = unsafe { g2_1.as_mut().expect("g2_add::invalid g2_1 ptr").val };
     let g2_2_bytes = unsafe { g2_2.as_mut().expect("g2_add::invalid g2_2 ptr").val };
@@ -72,6 +166,17 @@ pub extern "C" fn g2_add(g2_1: *mut g2object, g2_2: *mut g2object) -> *const g2o
     let b = Box::new(resultobj);
     Box::into_raw(b)
 }
+#[no_mangle]
+pub extern "C" fn g2_neg(g2: *mut g2object) -> *const g2object {
+    let g2_bytes = unsafe { g2.as_mut().expect("g2_neg::invalid g2 ptr").val };
+    let result = g2_bytes_neg(g2_bytes);
+    let result_bytes = g2_to_bytes(result);
+    let resultobj = g2object { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
+}
+
+
 
 #[no_mangle]
 pub extern "C" fn g1_mul(g1: *mut g1object, x: u64) -> *const g1object {
@@ -158,11 +263,12 @@ pub extern "C" fn gt_check(ptr: *mut gtobject) {
 }
 
 #[no_mangle]
-pub extern "C" fn test_generator_pairing(ptr: *mut gtobject) {
+pub extern "C" fn test_generator_pairing() -> *const gtobject{
     let g1 = G1Affine::generator();
     let g2 = G2Affine::generator();
     let result = pairing(&g1, &g2);
-    let result_test_bytes = unsafe { ptr.as_mut().expect("invalid ptr") };
-    let result_test = bytes_to_gt(result_test_bytes.val);
-    assert_eq!(result, result_test);
+    let result_bytes = gt_to_bytes(result);
+    let resultobj = gtobject { val: result_bytes };
+    let b = Box::new(resultobj);
+    Box::into_raw(b)
 }

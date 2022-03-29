@@ -3,6 +3,9 @@ use bls12_381::{
     Gt, MillerLoopResult, Scalar,
 };
 
+
+
+
 pub fn bytes_g1_mul(g1_bytes: [u8; 96], x: u64) -> [u8; 96] {
     let g1 = bytes_to_g1(g1_bytes);
     let x = Scalar::from(x);
@@ -44,12 +47,22 @@ pub fn bytes_to_g1(bytes: [u8; 96]) -> G1Affine {
     G1Affine::from_uncompressed(&bytes).unwrap()
 }
 
+pub fn g1_bytes_neg(bytes: [u8; 96]) -> G1Affine {
+    let g1 = G1Affine::from_uncompressed(&bytes).unwrap();
+    -g1
+}
+
 pub fn g2_to_bytes(g2: G2Affine) -> [u8; 192] {
     g2.to_uncompressed()
 }
 
 pub fn bytes_to_g2(bytes: [u8; 192]) -> G2Affine {
     G2Affine::from_uncompressed(&bytes).unwrap()
+}
+
+pub fn g2_bytes_neg(bytes: [u8; 192]) -> G2Affine {
+    let g2 = G2Affine::from_uncompressed(&bytes).unwrap();
+    -g2
 }
 /*pub fn g1_to_bytes(g1: G1Affine) -> [u8; 104] {
     let bytes = unsafe { transmute::<G1Affine, [u8; 104]>(g1) };
@@ -85,6 +98,12 @@ pub fn gt_to_bytes(gt: Gt) -> [u64; 72] {
     let bytes = unsafe { transmute::<Gt, [u64; 72]>(gt) };
     bytes
 }
+
+pub fn gt_bytes_neg(bytes: [u64; 72]) -> Gt {
+    let gt = unsafe { transmute::<[u64; 72], Gt>(bytes) };
+    -gt
+}
+
 pub fn bytes_multi_miller_loop(g1_bytes: [u8; 96], g2_bytes: [u8; 192]) -> [u64; 72] {
     let g1 = G1Affine::from_uncompressed(&g1_bytes).unwrap();
     let g2 = G2Affine::from_uncompressed(&g2_bytes).unwrap();
@@ -105,7 +124,7 @@ pub fn bytes_gt_add(a: [u64; 72], b: [u64; 72]) -> [u64; 72] {
     let b = bytes_to_gt(b);
     gt_to_bytes(a + b)
 }
-/*
+
 #[test]
 pub fn test_transmut_gt() {
     let x = Gt::default();
@@ -186,4 +205,8 @@ pub fn g1_ptr() {
     println!("g1: {:?}", g1_bytes);
     println!("ptrg1: {:?}", g1_test);
 }
-*/
+
+pub fn test_g1_neg(){
+    let g1 = G1Affine::generator();
+    let g1_neg = -g1;
+}

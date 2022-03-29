@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
+using System.Numerics;
 using Neo;
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Attributes;
@@ -17,13 +18,14 @@ namespace testBls12Contract
     [ContractPermission("*", "*")]
     public class testBls12Contract: SmartContract
     {
+        public static BigInteger getOne() => 1;
         public static ByteString pointAdd(ByteString gt1, ByteString gt2)
         {
             ByteString result = Crypto.Bls12381Add(gt1, gt2);
             return result;
         }
 
-        public static ByteString pointMul(ByteString gt, int mul)
+        public static ByteString pointMul(ByteString gt, long mul)
         {
             ByteString result = Crypto.Bls12381Mul(gt, mul);
             return result;
