@@ -1,10 +1,6 @@
 pub mod bls_extern;
 use crate::bls_extern::*;
-use bls12_381::{
-    multi_miller_loop, pairing, G1Affine, G1Projective, G2Affine, G2Prepared, G2Projective, Gt,
-    MillerLoopResult,
-};
-use std::slice::*;
+use bls12_381::{pairing, G1Affine, G2Affine, Gt};
 
 #[no_mangle]
 pub extern "C" fn gt_add(gt1: *mut gtobject, gt2: *mut gtobject) -> *const gtobject {
@@ -29,7 +25,7 @@ pub extern "C" fn gt_mul(gt1: *mut gtobject, mul: u64) -> *const gtobject {
     Box::into_raw(b)
 }
 
-#[no_mangle] //不写这个会把函数名编译成其他乱七八糟的
+#[no_mangle]
 pub extern "C" fn g1_g2_pairing(g1: *mut g1object, g2: *mut g2object) -> *const gtobject {
     let g1 = unsafe { g1.as_mut().expect("g1_g2_pairing::invalid g1 ptr").val };
     let g2 = unsafe { g2.as_mut().expect("g1_g2_pairing::invalid g2 ptr").val };
@@ -49,7 +45,6 @@ pub extern "C" fn gt_neg(gt: *mut gtobject) -> *const gtobject {
     Box::into_raw(b)
 }
 
-
 pub struct g1object {
     pub val: [u8; 96],
 }
@@ -63,7 +58,7 @@ pub struct gtobject {
 }
 
 #[no_mangle]
-pub extern "C" fn gt_neg_mul() -> *const gtobject{
+pub extern "C" fn gt_neg_mul() -> *const gtobject {
     use bls12_381::Scalar;
     let mut gt1 = pairing(&G1Affine::generator(), &G2Affine::generator());
     gt1 = gt1 * Scalar::from(3);
@@ -74,7 +69,7 @@ pub extern "C" fn gt_neg_mul() -> *const gtobject{
 }
 
 #[no_mangle]
-pub extern "C" fn gt_add_test() -> *const gtobject{
+pub extern "C" fn gt_add_test() -> *const gtobject {
     let gt1 = pairing(&G1Affine::generator(), &G2Affine::generator());
     let gt = gt1 + gt1;
     let result_bytes = gt_to_bytes(gt);
@@ -83,7 +78,7 @@ pub extern "C" fn gt_add_test() -> *const gtobject{
     Box::into_raw(b)
 }
 
-#[no_mangle]
+/*#[no_mangle]
 pub extern "C" fn gt_mul_test() -> *const gtobject{
     use bls12_381::Scalar;
     let mut gt1 = pairing(&G1Affine::generator(), &G2Affine::generator());
@@ -134,7 +129,7 @@ pub extern "C" fn g2_mul_test() -> *const g2object{
     let resultobj = g2object { val: result_bytes };
     let b = Box::new(resultobj);
     Box::into_raw(b)
-}
+}*/
 
 #[no_mangle]
 pub extern "C" fn g1_add(g1_1: *mut g1object, g1_2: *mut g1object) -> *const g1object {
@@ -156,7 +151,6 @@ pub extern "C" fn g1_neg(g1: *mut g1object) -> *const g1object {
     Box::into_raw(b)
 }
 
-
 #[no_mangle]
 pub extern "C" fn g2_add(g2_1: *mut g2object, g2_2: *mut g2object) -> *const g2object {
     let g2_1_bytes = unsafe { g2_1.as_mut().expect("g2_add::invalid g2_1 ptr").val };
@@ -175,8 +169,6 @@ pub extern "C" fn g2_neg(g2: *mut g2object) -> *const g2object {
     let b = Box::new(resultobj);
     Box::into_raw(b)
 }
-
-
 
 #[no_mangle]
 pub extern "C" fn g1_mul(g1: *mut g1object, x: u64) -> *const g1object {
@@ -212,11 +204,12 @@ pub extern "C" fn g1_dispose(ptr: *mut g1object) {
     }
 }
 
+/*
 #[no_mangle]
 pub extern "C" fn g1_check(ptr: *mut g1object) {
     let obj = unsafe { ptr.as_mut().expect("invalid ptr") };
     println!("传回rust的东西： {:?}", obj.val)
-}
+}*/
 
 #[no_mangle]
 pub extern "C" fn g2_generator() -> *const g2object {
@@ -233,7 +226,7 @@ pub extern "C" fn g2_dispose(ptr: *mut g2object) {
         Box::from_raw(ptr);
     }
 }
-
+/*
 #[no_mangle]
 pub extern "C" fn g2_check(ptr: *mut g2object) {
     let obj = unsafe { ptr.as_mut().expect("invalid ptr") };
@@ -247,7 +240,7 @@ pub extern "C" fn gt_identity() -> *const gtobject {
     println!("rust传出的东西： {:?}", obj.val);
     let b = Box::new(obj);
     return Box::into_raw(b);
-}
+}*/
 
 #[no_mangle]
 pub extern "C" fn gt_dispose(ptr: *mut gtobject) {
@@ -255,7 +248,7 @@ pub extern "C" fn gt_dispose(ptr: *mut gtobject) {
         Box::from_raw(ptr);
     }
 }
-
+/*
 #[no_mangle]
 pub extern "C" fn gt_check(ptr: *mut gtobject) {
     let obj = unsafe { ptr.as_mut().expect("invalid ptr") };
@@ -271,4 +264,4 @@ pub extern "C" fn test_generator_pairing() -> *const gtobject{
     let resultobj = gtobject { val: result_bytes };
     let b = Box::new(resultobj);
     Box::into_raw(b)
-}
+}*/
