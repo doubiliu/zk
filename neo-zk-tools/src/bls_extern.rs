@@ -1,10 +1,7 @@
 use bls12_381::{
-    multi_miller_loop, pairing, Bls12, G1Affine, G1Projective, G2Affine, G2Prepared, G2Projective,
-    Gt, MillerLoopResult, Scalar,
+    multi_miller_loop, pairing, G1Affine, G1Projective, G2Affine, G2Prepared, G2Projective, Gt,
+    MillerLoopResult, Scalar,
 };
-
-
-
 
 pub fn bytes_g1_mul(g1_bytes: [u8; 96], x: u64) -> [u8; 96] {
     let g1 = bytes_to_g1(g1_bytes);
@@ -64,25 +61,7 @@ pub fn g2_bytes_neg(bytes: [u8; 192]) -> G2Affine {
     let g2 = G2Affine::from_uncompressed(&bytes).unwrap();
     -g2
 }
-/*pub fn g1_to_bytes(g1: G1Affine) -> [u8; 104] {
-    let bytes = unsafe { transmute::<G1Affine, [u8; 104]>(g1) };
-    bytes
-}
 
-pub fn bytes_to_g1(bytes: [u8; 104]) -> G1Affine {
-    let g1 = unsafe { transmute::<[u8; 104], G1Affine>(bytes) };
-    g1
-}
-
-pub fn g2_to_bytes(g2: G2Affine) -> [u8; 200] {
-    let bytes = unsafe { transmute::<G2Affine, [u8; 200]>(g2) };
-    bytes
-}
-
-pub fn bytes_to_g2(bytes: [u8; 200]) -> G2Affine {
-    let g2 = unsafe { transmute::<[u8; 200], G2Affine>(bytes) };
-    g2
-}*/
 pub fn g1pair(bytes: [u8; 32]) -> G1Affine {
     let x = Scalar::from_bytes(&bytes);
     let result = G1Affine::generator() * x.unwrap();
@@ -140,25 +119,22 @@ fn test_g_serialize_deserialize() {
     let g1_identity = G1Affine::identity();
     let g1_bytes = g1_to_bytes(g1_identity);
     let g1_test = bytes_to_g1(g1_bytes);
-
     let g2_identity = G2Affine::identity();
     let g2_bytes = g2_to_bytes(g2_identity);
     let g2_test = bytes_to_g2(g2_bytes);
-
     let result = MillerLoopResult::default().final_exponentiation();
     let result_bytes = gt_to_bytes(result);
     let result_test = bytes_to_gt(result_bytes);
-
     assert_eq!(g2_identity.eq(&g2_test), true);
     assert_eq!(g1_identity.eq(&g1_test), true);
     assert_eq!(result, result_test);
 }
+
 #[test]
 fn test_bytes_pairing_loop() {
     let a1 = G1Affine::generator();
     let b1 = G2Affine::generator();
     let b1_prepared = G2Prepared::from(b1);
-
     let expected = pairing(&a1, &b1);
     let test =
         multi_miller_loop(&[(&a1, &b1_prepared), (&a1, &b1_prepared)]).final_exponentiation();
@@ -172,7 +148,6 @@ fn test_bytes_pairing() {
     let g2 = G2Affine::from(G2Projective::generator());
     let g2_pre = G2Prepared::from(g2);
     let result = pairing(&g1, &g2);
-
     let g1_bytes = g1_to_bytes(g1);
     let g2_bytes = g2_to_bytes(g2);
     let result_bytes = bytes_pairing(g1_bytes, g2_bytes);
@@ -182,19 +157,8 @@ fn test_bytes_pairing() {
     assert_eq!(result, result_test);
 }
 
-#[test] //不写这个会把函数名编译成其他乱七八糟的
-pub fn g1_g2_pairing() {
-    let mut g1 = G1Affine::generator();
-    let mut g2 = G2Affine::generator();
-    let g1 = g1_to_bytes(g1);
-    let g2 = g2_to_bytes(g2);
-    let result = bytes_pairing(g1, g2);
-    println!("g1_g2_pairing result: {:?}", result);
-    let result_ptr = &result as *const u64;
-}
-
 #[test]
-pub fn g1_ptr() {
+pub fn test_g1_ptr() {
     let g1 = G1Affine::generator();
     let g1_bytes = g1_to_bytes(g1);
     let g1_generator_ptr = &g1_bytes as *const u8;
@@ -202,11 +166,26 @@ pub fn g1_ptr() {
     let mut g1_test = [0u8; 96];
     g1_test[0..96].copy_from_slice(&arr1);
     assert_eq!(g1_bytes, g1_test);
-    println!("g1: {:?}", g1_bytes);
-    println!("ptrg1: {:?}", g1_test);
 }
 
-pub fn test_g1_neg(){
+#[test]
+
+pub fn test_g1_add() {
     let g1 = G1Affine::generator();
-    let g1_neg = -g1;
+    let g1p = G1Projective::from(&g1);
+    let result = g1p + g1p;
+    let g1b = g1_to_bytes(g1);
+    let resultb = bytes_g1_add(g1b, g1b);
+    let result_test = bytes_to_g1(resultb);
+    assert_eq!(G1Affine::from(result), result_test);
+}
+
+#[test]
+pub fn test_g1_mul() {
+    let g1 = G1Affine::generator();
+    let result = g1 * Scalar::from(3);
+    let g1b = g1_to_bytes(g1);
+    let resultb = bytes_g1_mul(g1b, 3);
+    let result_test = bytes_to_g1(resultb);
+    assert_eq!(G1Affine::from(result), result_test);
 }
