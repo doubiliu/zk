@@ -168,7 +168,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fb9b38af92608140b86b693604b9ffcc5824240a484d1ecd4795bacb2fe88f3"
 
 [[package]]
-name = "neo-zk-tools"
+name = "neozktools"
 version = "0.1.0"
 dependencies = [
  "bls12_381",

@@ -1,13 +1,13 @@
 pub mod bls_extern;
 use crate::bls_extern::*;
 use bls12_381::{pairing, G1Affine, G2Affine, Gt};
+mod test;
 
 #[no_mangle]
 pub extern "C" fn gt_add(gt1: *mut gtobject, gt2: *mut gtobject) -> *const gtobject {
     let gt1_bytes = unsafe { gt1.as_mut().expect("gt_add::invalid gt1 ptr").val };
     let gt2_bytes = unsafe { gt2.as_mut().expect("gt_add::invalid gt2 ptr").val };
     let result = bytes_gt_add(gt1_bytes, gt2_bytes);
-    println!("gt_add result: {:?}", result);//这里删除
     let resultobj = gtobject { val: result };
     let b = Box::new(resultobj);
     Box::into_raw(b)
@@ -30,7 +30,7 @@ pub extern "C" fn g1_g2_pairing(g1: *mut g1object, g2: *mut g2object) -> *const 
     let g1 = unsafe { g1.as_mut().expect("g1_g2_pairing::invalid g1 ptr").val };
     let g2 = unsafe { g2.as_mut().expect("g1_g2_pairing::invalid g2 ptr").val };
     let result = bytes_pairing(g1, g2);
-    println!("g1_g2_pairing result: {:?}", result);//这里删除
+    println!("g1_g2_pairing result: {:?}", result); //这里删除
     let resultobj = gtobject { val: result };
     let b = Box::new(resultobj);
     Box::into_raw(b)
@@ -129,7 +129,14 @@ pub extern "C" fn g2_mul(g2: *mut g2object, x: u64) -> *const g2object {
 pub extern "C" fn g1_generator() -> *const g1object {
     let g1_bytes = g1_to_bytes(G1Affine::generator());
     let obj = g1object { val: g1_bytes };
-    println!("rust传出的东西： {:?}", obj.val);//这里删除
+    let b = Box::new(obj);
+    return Box::into_raw(b);
+}
+
+#[no_mangle]
+pub extern "C" fn g2_generator() -> *const g2object {
+    let g2_bytes = g2_to_bytes(G2Affine::generator());
+    let obj = g2object { val: g2_bytes };
     let b = Box::new(obj);
     return Box::into_raw(b);
 }
@@ -139,15 +146,6 @@ pub extern "C" fn g1_dispose(ptr: *mut g1object) {
     unsafe {
         Box::from_raw(ptr);
     }
-}
-
-#[no_mangle]
-pub extern "C" fn g2_generator() -> *const g2object {
-    let g2_bytes = g2_to_bytes(G2Affine::generator());
-    let obj = g2object { val: g2_bytes };
-    println!("rust传出的东西： {:?}", obj.val);//这里删除
-    let b = Box::new(obj);
-    return Box::into_raw(b);
 }
 
 #[no_mangle]
@@ -163,4 +161,3 @@ pub extern "C" fn gt_dispose(ptr: *mut gtobject) {
         Box::from_raw(ptr);
     }
 }
-
