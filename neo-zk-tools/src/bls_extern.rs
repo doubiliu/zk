@@ -104,7 +104,7 @@ pub fn bytes_gt_add(a: [u64; 72], b: [u64; 72]) -> [u64; 72] {
     gt_to_bytes(a + b)
 }
 
-#[test]
+#[test]//测试方法要放到测试目录 和src平级
 pub fn test_transmut_gt() {
     let x = Gt::default();
     let g1p = G1Projective::generator();
